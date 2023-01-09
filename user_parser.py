@@ -24,7 +24,7 @@ def parse_from_blogs(page):
           arr = np.append(arr, k.get('href')[25:])
       print(f"Blogs Page {i} parsed")
     #Just for backup files. Uncomment if you need.
-    #Series(list(set(arr))).to_csv(f'backup/blogs_users_pages{page[0]}-{page[1]}.csv')
+    #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/blogs_users_pages{page[0]}-{page[1]}.csv', index=False)
     return set(arr)
 
 def parse_from_articles(page):
@@ -47,7 +47,7 @@ def parse_from_articles(page):
           arr = np.append(arr, k.get('href')[25:])
       print(f"Articles Page {i} parsed")
     #Just for backup files. Uncomment if you need.
-    #Series(list(set(arr))).to_csv(f'backup/articles_users_pages{page[0]}-{page[1]}.csv')
+    #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/articles_users_pages{page[0]}-{page[1]}.csv', index=False)
     return set(arr)
 
 def parse_from_news(page):
@@ -68,7 +68,7 @@ def parse_from_news(page):
           arr = np.append(arr, k.get('href')[25:])
       print(f"News Page {i} parsed")
     #Just for backup files. Uncomment if you need.
-    #Series(list(set(arr))).to_csv(f'backup/news_users_pages{page[0]}-{page[1]}.csv')
+    #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/news_users_pages{page[0]}-{page[1]}.csv', index=False)
     return set(arr)
 
 def parse_users():
@@ -111,4 +111,4 @@ if __name__ == '__main__':
     for i in users:
         for j in i:
             result = result | j        
-    Series(list(result)).to_csv('users.csv')
+    DataFrame(list(result), columns=['username']).to_csv('users.csv', index=False)
