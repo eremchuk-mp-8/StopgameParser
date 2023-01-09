@@ -3,7 +3,6 @@ from pandas import Series
 import requests
 from bs4 import BeautifulSoup as BS
 import multiprocessing as mp
-import time
 
 def parse_from_blogs(page):
     '''
@@ -99,17 +98,17 @@ def parse_users():
         blogs.append((i,i+r2-1))
     for i in range(1,articles_page,r3):
         articles.append((i,i+r3-1))
-    start = time.time()
     news_users = pool.map(parse_from_news, [i for i in news])
-    end = time.time()
-    print(f"{end-start}s")
-    start = time.time()
     blogs_users = pool.map(parse_from_blogs, [i for i in blogs])
-    end = time.time()
-    print(f"{end-start}s")
-    start = time.time()
     articles_users = pool.map(parse_from_articles, [i for i in articles])
-    end = time.time()
-    print(f"{end-start}s")
     pool.close()
     return [news_users, blogs_users, articles_users]
+
+if __name__ == '__main__':
+    users=parse_users()
+    
+    result = set()
+    for i in users:
+        for j in i:
+            result = result | j        
+    Series(list(result)).to_csv('users.csv')
