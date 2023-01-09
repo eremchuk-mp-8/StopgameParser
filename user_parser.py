@@ -1,5 +1,5 @@
 import numpy as np
-from pandas import Series
+from pandas import DataFrame
 import requests
 from bs4 import BeautifulSoup as BS
 import multiprocessing as mp
