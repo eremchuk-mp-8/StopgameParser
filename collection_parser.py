@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup as BS
 from hashlib import sha256
 import multiprocessing as mp
 
-def parse_games(username):
+def parse_collection(username):
     '''
     Arguments:
         - username
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     users = pd.read_csv('users.csv')
     df = DataFrame(columns=['id', 'gamename', 'user_rating'])
     pool = mp.Pool(mp.cpu_count())
-    buffer = pool.map(parse_games, users.username)
+    buffer = pool.map(parse_collection, users.username)
     pool.close()
     for obj in buffer:
         if obj.empty == False:
