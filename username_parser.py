@@ -3,6 +3,8 @@ from pandas import DataFrame
 import requests
 from bs4 import BeautifulSoup as BS
 import multiprocessing as mp
+import time
+from datetime import datetime
 
 def parse_from_blogs(page):
     '''
@@ -25,9 +27,11 @@ def parse_from_blogs(page):
             print(f"Blogs Page {i} parsed")
     except:
         print('something went wrong')
-    #Just for backup files. Uncomment if you need.
-    #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/blogs_users_pages{page[0]}-{page[1]}.csv', index=False)
-    return set(arr)
+        return None
+    else:
+        #Just for backup files. Uncomment if you need.
+        #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/blogs_users_pages{page[0]}-{page[1]}.csv', index=False)
+        return set(arr)
 
 def parse_from_articles(page):
     '''
@@ -50,9 +54,11 @@ def parse_from_articles(page):
             print(f"Articles Page {i} parsed") 
     except:
         print('something went wrong')
-    #Just for backup files. Uncomment if you need.
-    #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/articles_users_pages{page[0]}-{page[1]}.csv', index=False)
-    return set(arr)
+        return None
+    else:
+        #Just for backup files. Uncomment if you need.
+        #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/articles_users_pages{page[0]}-{page[1]}.csv', index=False)
+        return set(arr)
 
 def parse_from_news(page):
     '''
@@ -73,9 +79,11 @@ def parse_from_news(page):
             print(f"News Page {i} parsed")
     except:
         print('something went wrong')
-    #Just for backup files. Uncomment if you need.
-    #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/news_users_pages{page[0]}-{page[1]}.csv', index=False)
-    return set(arr)
+        return None
+    else:
+        #Just for backup files. Uncomment if you need.
+        #DataFrame(list(set(arr)), columns=["username"]).to_csv(f'backup/news_users_pages{page[0]}-{page[1]}.csv', index=False)
+        return set(arr)
 
 def parse_users():
     domain = "https://stopgame.ru"
@@ -109,10 +117,14 @@ def parse_users():
     return [news_users, blogs_users, articles_users]
 
 if __name__ == '__main__':
+    start_time = time.time()
     users=parse_users()
     
     result = set()
     for i in users:
         for j in i:
-            result = result | j        
-    DataFrame(list(result), columns=['username']).to_csv('users.csv', index=False)
+            result = result | j
+    dt = datetime.now()
+    DataFrame(list({'sdasdas','sasd21'}), columns=['username']).to_csv(f'usernames_{dt.day}_{dt.month}_{dt.year}.csv', index=False)
+    t = time.time()-start_time
+    print(f"Execution time: {t//60} m, {t%60} s")
