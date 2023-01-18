@@ -125,6 +125,6 @@ if __name__ == '__main__':
         for j in i:
             result = result | j
     dt = datetime.now()
-    DataFrame(list({'sdasdas','sasd21'}), columns=['username']).to_csv(f'usernames_{dt.day}_{dt.month}_{dt.year}.csv', index=False)
+    DataFrame(list(result), columns=['username']).to_csv(f'usernames_{dt.day}_{dt.month}_{dt.year}.csv', index=False)
     t = time.time()-start_time
     print(f"Execution time: {t//60} m, {t%60} s")
