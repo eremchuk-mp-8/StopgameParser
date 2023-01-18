@@ -52,7 +52,7 @@ if __name__ == '__main__':
     f.close()
     for i in users.username:
         obj = parse_user(i)
-        if obj.empty == False:
+        if obj is not None:
             df = df.append(obj, ignore_index = True)
     df.to_csv('users.csv', index=False)
     t = time.time()-start_time
