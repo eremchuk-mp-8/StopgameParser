@@ -1,10 +1,8 @@
-import numpy as np
 import pandas as pd
 from pandas import DataFrame
 import requests
 from bs4 import BeautifulSoup as BS
 from hashlib import sha256
-import multiprocessing as mp
 import time
 from datetime import datetime
 
@@ -39,7 +37,6 @@ def parse_user(username):
         f.write(f"{domain}/user/{username} parsing failed\n")
         f.close()
     else:
-        print(f"{username} parsed")
         return DataFrame(user_string)
 
 if __name__ == '__main__':
@@ -48,7 +45,7 @@ if __name__ == '__main__':
     start_time = time.time()
     df = DataFrame()
     f = open('errorlog.txt', 'a')
-    f.write(f"----{datetime.now()}----\n")
+    f.write(f"----Parsing users {datetime.now()}----\n")
     f.close()
     for i in users.username:
         obj = parse_user(i)
