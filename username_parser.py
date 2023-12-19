@@ -6,6 +6,14 @@ import multiprocessing as mp
 import time
 from datetime import datetime
 
+article_card_bottom = "_card__bottom_6bcao_1"
+article_card_info_comment = "_card__info__attribute_6bcao_1"
+comment_header = "_comment__header_11d56_1"
+comment_user_info = "_user-info_pxqm4_1116 _user-info--medium_pxqm4_1"
+blog_card_info_comment = "_card__info__attribute_6bcao_1"
+blog_card_info_top = "_card__top_6bcao_468"
+news_card_comment = "_comments_11mk8_133"
+
 def parse_from_blogs(page):
     '''
     arguments:
@@ -17,13 +25,15 @@ def parse_from_blogs(page):
         for i in range(page[0],page[1]+1):
             response = requests.get(f"{domain}/blogs/all/p{i}")
             soup = BS(response.content, "lxml")
-            for j in soup.find_all(class_ = "_card__bottom_8sstg_1"):
+            for j in soup.find_all(class_ = blog_card_info_top):
                 arr = np.append(arr, j.find('a').get('href')[25:])
-            for j in soup.find_all(class_ = "_card__content_8sstg_390"):
-                response = requests.get(f"{domain}{j.find('a').get('href')}#comments")
-                soup = BS(response.content, "lxml")
-                for k in soup.find_all(class_ = "_comment__author_18g7w_1"):
-                    arr = np.append(arr, k.get('href')[25:])
+            for j in soup.find_all(class_ = blog_card_info_comment):
+                if int(j.contents[1]) > 0:
+                  response = requests.get(f"{domain}{j.get('href')}#comments")
+                  soup = BS(response.content, "lxml")
+                  for k in soup.find_all(class_ = comment_header):
+                    if k.find(class_ = comment_user_info) is not None:
+                      arr = np.append(arr, k.find(class_ = comment_user_info).get('href')[25:])
             print(f"Blogs Page {i} parsed")
     except:
         print('something went wrong')
@@ -44,13 +54,15 @@ def parse_from_articles(page):
         for i in range(page[0],page[1]+1):
             response = requests.get(f"{domain}/articles/p{i}")
             soup = BS(response.content, "lxml")
-            for j in soup.find_all(class_ = "_card__bottom_8sstg_1"):
+            for j in soup.find_all(class_ = article_card_bottom):
                 arr = np.append(arr, j.find('a').get('href')[25:])
-            for j in soup.find_all(class_ = "_card__content_8sstg_390"):
-                response = requests.get(f"{domain}{j.find('a').get('href')}#comments")
-                soup = BS(response.content, "lxml")
-                for k in soup.find_all(class_ = "_comment__author_18g7w_1"):
-                    arr = np.append(arr, k.get('href')[25:])
+            for j in soup.find_all(class_ = article_card_info_comment):
+                if int(j.contents[1]) > 0:
+                  response = requests.get(f"{domain}{j.get('href')}#comments")
+                  soup = BS(response.content, "lxml")
+                  for k in soup.find_all(class_ = comment_header):
+                    if k.find(class_ = comment_user_info) is not None:
+                      arr = np.append(arr, k.find(class_ = comment_user_info).get('href')[25:])
             print(f"Articles Page {i} parsed") 
     except:
         print('something went wrong')
@@ -71,11 +83,12 @@ def parse_from_news(page):
         for i in range(page[0],page[1]+1):
             response = requests.get(f"{domain}/news/all/p{i}")
             soup = BS(response.content, "lxml")
-            for j in soup.find_all(class_ = "item article-summary"):
-                response = requests.get(f"{domain}{j.find('a').get('href')}#comments")
+            for j in soup.find_all(class_ = news_card_comment):
+                response = requests.get(f"{domain}{j.get('href')}")
                 soup = BS(response.content, "lxml")
-                for k in soup.find_all(class_ = "_comment__author_18g7w_1"):
-                    arr = np.append(arr, k.get('href')[25:])
+                for k in soup.find_all(class_ = comment_header):
+                  if k.find(class_ = comment_user_info) is not None:
+                    arr = np.append(arr, k.find(class_ = comment_user_info).get('href')[25:])
             print(f"News Page {i} parsed")
     except:
         print('something went wrong')
@@ -118,12 +131,15 @@ def parse_users():
 
 if __name__ == '__main__':
     start_time = time.time()
+    
     users=parse_users()
     
     result = set()
     for i in users:
         for j in i:
-            result = result | j
+            if j is None:
+                continue
+            result = result.union(j)
     dt = datetime.now()
     DataFrame(list(result), columns=['username']).to_csv(f'usernames_{dt.day}_{dt.month}_{dt.year}.csv', index=False)
     t = time.time()-start_time
